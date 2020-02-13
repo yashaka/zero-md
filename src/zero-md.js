@@ -15,6 +15,8 @@
     constructor() {
       super();
       window.ZeroMd = window.ZeroMd || {};
+      window.ZeroMd.markedjs = window.ZeroMd.markedjs || {};
+      window.ZeroMd.markedjs.options = window.ZeroMd.markedjs.options || {};
       window.ZeroMd.config = window.ZeroMd.config || {};
       window.ZeroMd.config.markedUrl = window.ZeroMd.config.markedUrl || 'https://cdn.jsdelivr.net/npm/marked@0/marked.min.js';
       window.ZeroMd.config.prismUrl = window.ZeroMd.config.prismUrl || 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js';
@@ -142,7 +144,62 @@
                      this._loadScript(this.markedUrl, typeof window.marked, 'zero-md-marked-ready', 'async'),
                      this._loadScript(this.prismUrl, typeof window.Prism, 'zero-md-prism-ready', 'async', 'data-manual')])
           .then(data => {
-            resolve('<div class="markdown-body">' + window.marked(data[0], { highlight: this._prismHighlight.bind(this) }) + '</div>');
+
+            const renderer = new window.marked.Renderer();
+
+            renderer.heading = (text, level) => {
+              const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/mi) || [null, text,];
+              const id = userId || pure.toLowerCase().replace(/[^\w]+/g, '-');
+              return `<h${level} id="${id}">${pure}</h${level}>`;
+            };
+
+            let md = data[0];
+
+            const pageBreaks = /====+/gmi;
+            md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>');
+
+            const pageBreaksToHideAnswer = /===/gmi;
+            md = md.replace(pageBreaksToHideAnswer, '<br/>'.repeat(40));
+
+            const mdExtensions = /.md\)/gmi;
+            md = md.replace(mdExtensions, '-md)');
+
+            const poetries = /---[a-z]*\n([\s\S]*?)\n---/gmi;
+            const processPoetry = (match, code) => {
+              let res = code;
+              const rules = [
+                [/(___)(.*?)\1/gmi,     '<em>$2</em>'], //emphasis
+
+                [/(__)(.*?)\1/gmi,      '<b>$2</b>'], //bold1
+                [/(\*\*)(.*?)\1/gmi,    '<b>$2</b>'], //bold2
+
+                // [/^(?!.*\/\*.*$).*(\*)(.*?)\1/gmi,      '<em>$2</em>'], //emphasis
+                // TODO: fix: does not work for lines: ... * ... * ... /* ... */ ...
+                // read for more info:
+                //    https://stackoverflow.com/questions/7376238/javascript-regex-look-behind-alternative
+
+                [/(____)(.*?)\1/gmi,     '<span style="text-decoration:underline">$2</span>'] //underlined
+              ];
+
+              for (const rule of rules) {
+                // console.log(rule);
+                res = res.replace(rule[0], rule[1]);
+              }
+
+              // return `<pre><code>${res}</code></pre>`;
+              return `<pre>${res}</pre>`;
+            };
+
+            md = md.replace(poetries, processPoetry);
+
+            const options = {
+              renderer: renderer,
+              highlight: this._prismHighlight.bind(this)
+            };
+
+            const html = window.marked(md, Object.assign(options, window.ZeroMd.markedjs.options));
+
+            resolve('<div class="markdown-body">' + html + '</div>');
           }, err => { reject(err); });
       });
     }

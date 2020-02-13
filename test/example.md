@@ -3,8 +3,36 @@
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P
 
-## Anchor link test
-Clicking [Taman et veri](#tamen-et-veri) should scroll to the correct section.
+## Markua Poetry support
+
+This is normal paragraph. Then poetry goes:
+
+---
+
+some.codeWith(**'highlighted strongly argument'**)
+and()
+
+---
+
+Again normal paragraph.
+
+---
+
+and.again().somePetry()
+code.with(___'highlighted argument'___)
+then.nothing()
+
+---
+
+## md extension fix in links
+
+TBD
+
+## Anchor link for header with custom id test
+Clicking [Tamen et veri](#t-e-v) should scroll to the correct section.
+
+## Anchor link for header with generated id test
+Clicking [Tamen et](#tamen-et) should scroll to the correct section.
 
 ## Concidit caput certo flere pedum
 
@@ -48,7 +76,12 @@ vimque aera*, unius augent odium solane; quo Phoebus possent? Lege inmeritam
 amans sacrorum pallada. Corpore sacra nihil: corpora taceam, aberat
 **repulsus**.
 
-## Tamen et veri
+## Tamen et
+
+Lorem markdownum iugulum levati; tuum feri ignes rogantem fugio natorum.
+Eueninae ducere et erat ad caruit adclinavit quod. Quae diebus domo, posset
+
+## Tamen et veri {#t-e-v}
 
 Lorem markdownum iugulum levati; tuum feri ignes rogantem fugio natorum.
 Eueninae ducere et erat ad caruit adclinavit quod. Quae diebus domo, posset
@@ -71,6 +104,15 @@ quinque formam et nec nec!
     leaderboard += clickMouseThick(wiBatchIso(zettabyte_oop_core, pci,
             boxInfringement));
     petaflopsYobibyte = payload;
+    
+## test page breaks
+
+Hint...
+
+===
+
+Solution...
+
 
 ## Quasque gaudia umor parente iaculum
 
