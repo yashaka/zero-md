@@ -3,6 +3,38 @@
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P
 
+## Python code highlighting
+
+```python
+# selene-intro/tests/test_todomvc.py
+
+def test_complete_task():
+    # open TodoMVC page
+
+    # add tasks: 'a', 'b', 'c'
+    # tasks should be 'a', 'b', 'c'
+
+    # toggle 'b'
+    # completed tasks should be 'b'
+    # active tasks should be 'a', 'c'
+    pass
+```
+
+## Python code as just code highlighting
+
+    # selene-intro/tests/test_todomvc.py
+    
+    def test_complete_task():
+        # open TodoMVC page
+    
+        # add tasks: 'a', 'b', 'c'
+        # tasks should be 'a', 'b', 'c'
+    
+        # toggle 'b'
+        # completed tasks should be 'b'
+        # active tasks should be 'a', 'c'
+        pass
+
 ## Markua Poetry support
 
 This is normal paragraph. Then poetry goes:

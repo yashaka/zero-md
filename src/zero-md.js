@@ -163,6 +163,9 @@
             const pageBreaksToHideAnswer = /===/gmi;
             md = md.replace(pageBreaksToHideAnswer, '<br/>'.repeat(40));
 
+            const pythonCodeHighlightingWorkaround = /```python/gmi;
+            md = md.replace(pythonCodeHighlightingWorkaround, '```');
+
             const mdExtensions = /\.md\)/gmi;
             md = md.replace(mdExtensions, '-md)');
 
