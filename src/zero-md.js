@@ -166,6 +166,9 @@
             const mdExtensions = /.md\)/gmi;
             md = md.replace(mdExtensions, '-md)');
 
+            const mdExtensionsWithId = /.md#\)/gmi;
+            md = md.replace(mdExtensionsWithId, '-md#');
+
             const poetries = /---[a-z]*\n([\s\S]*?)\n---/gmi;
             const processPoetry = (match, code) => {
               let res = code;
