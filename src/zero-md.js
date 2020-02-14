@@ -18,6 +18,7 @@
       window.ZeroMd.markedjs = window.ZeroMd.markedjs || {};
       window.ZeroMd.markedjs.options = window.ZeroMd.markedjs.options || {};
       window.ZeroMd.config = window.ZeroMd.config || {};
+      window.ZeroMd.config.baseUrl = window.ZeroMd.config.baseUrl || '';
       window.ZeroMd.config.markedUrl = window.ZeroMd.config.markedUrl || 'https://cdn.jsdelivr.net/npm/marked@0/marked.min.js';
       window.ZeroMd.config.prismUrl = window.ZeroMd.config.prismUrl || 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js';
       window.ZeroMd.config.cssUrls = window.ZeroMd.config.cssUrls || ['https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css', 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css'];
@@ -41,12 +42,13 @@
     _ajaxGet(url) {
       return new Promise((resolve, reject) => {
         if (!url) { reject(url); return; }
+        const absoluteUrl = url.startsWith('http') ? url : window.ZeroMd.config.baseUrl + url;
         let req = new XMLHttpRequest();
         let handler = err => {
-          console.warn('[zero-md] Error getting file', url);
+          console.warn('[zero-md] Error getting file', absoluteUrl);
           reject(err);
         };
-        req.open('GET', url, true);
+        req.open('GET', absoluteUrl, true);
         req.onload = () => {
           if (req.status >= 200 && req.status < 400) { resolve(req.responseText); }
           else { handler(req); }
