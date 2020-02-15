@@ -3,9 +3,13 @@
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P
 
+# img base replacement hack
+
+![](./resources/00-selene-intro/03-01-autocomplete-browser.png)
+
 ## Python code highlighting
 
-```python
+```py
 # selene-intro/tests/test_todomvc.py
 
 def test_complete_task():

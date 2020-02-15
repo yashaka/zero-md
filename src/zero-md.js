@@ -19,6 +19,8 @@
       window.ZeroMd.markedjs.options = window.ZeroMd.markedjs.options || {};
       window.ZeroMd.config = window.ZeroMd.config || {};
       window.ZeroMd.config.baseUrl = window.ZeroMd.config.baseUrl || '';
+      window.ZeroMd.config.imgBaseOld = window.ZeroMd.config.imgBaseOld || './resources';
+      window.ZeroMd.config.imgBaseNew = window.ZeroMd.config.imgBaseNew || 'https://github.com/yashaka/taotaspy-resources/raw/master';
       window.ZeroMd.config.markedUrl = window.ZeroMd.config.markedUrl || 'https://cdn.jsdelivr.net/npm/marked@0/marked.min.js';
       window.ZeroMd.config.prismUrl = window.ZeroMd.config.prismUrl || 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js';
       window.ZeroMd.config.cssUrls = window.ZeroMd.config.cssUrls || ['https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css', 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css'];
@@ -156,6 +158,9 @@
             };
 
             let md = data[0];
+
+            const imgBase = /]\(\.\/resources/gmi;
+            md = md.replace(imgBase, '](' + window.ZeroMd.config.imgBaseNew);
 
             const pageBreaks = /====+/gmi;
             md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>');
