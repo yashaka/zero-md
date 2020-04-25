@@ -176,11 +176,11 @@
             const imgBase = /]\(\.\.?\/resources/gmi; // todo: move ../resources to config
             md = md.replace(imgBase, '](' + window.ZeroMd.config.imgBaseNew);
 
-            const pageBreaks = /===/gmi;
-            md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>');
-
             const pageBreaksToHideAnswer = /====+/gmi;
             md = md.replace(pageBreaksToHideAnswer, '<br/>'.repeat(40));
+
+            const pageBreaks = /===/gmi;
+            md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>');
 
             const pythonCodeHighlightingWorkaround = /```python/gmi;
             md = md.replace(pythonCodeHighlightingWorkaround, '```');
