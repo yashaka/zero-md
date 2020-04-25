@@ -22,6 +22,8 @@
       window.ZeroMd.config.anchorIdsToLowerCase = window.ZeroMd.config.anchorIdsToLowerCase === undefined ?
           true : window.ZeroMd.config.anchorIdsToLowerCase;
       window.ZeroMd.config.indentInsideTocByPixels = window.ZeroMd.config.indentInsideTocByPixels || 40;
+      window.ZeroMd.config.shortBreaksNumber = window.ZeroMd.config.shortBreaksNumber || 2;
+      window.ZeroMd.config.longBreaksNumber = window.ZeroMd.config.longBreaksNumber || 20;
       window.ZeroMd.config.imgBaseOld = window.ZeroMd.config.imgBaseOld || './resources';
       window.ZeroMd.config.imgBaseNew = window.ZeroMd.config.imgBaseNew || 'https://github.com/yashaka/taotaspy-resources/raw/master';
       window.ZeroMd.config.markedUrl = window.ZeroMd.config.markedUrl || 'https://cdn.jsdelivr.net/npm/marked@0/marked.min.js';
@@ -176,8 +178,11 @@
             const imgBase = /]\(\.\.?\/resources/gmi; // todo: move ../resources to config
             md = md.replace(imgBase, '](' + window.ZeroMd.config.imgBaseNew);
 
-            const pageBreaksToHideAnswer = /====+/gmi;
-            md = md.replace(pageBreaksToHideAnswer, '<br/>'.repeat(40));
+            const shortBreaks = /,,,,+/gmi;
+            md = md.replace(shortBreaks, '<br/>'.repeat(window.ZeroMd.config.shortBreaksNumber));
+
+            const longBreaks = /====+/gmi;
+            md = md.replace(longBreaks, '<br/>'.repeat(window.ZeroMd.config.longBreaksNumber));
 
             const pageBreaks = /===/gmi;
             md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>');
