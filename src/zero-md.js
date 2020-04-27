@@ -158,6 +158,8 @@
             let tocLinks = [];
 
             const tocStartLevelOption = /<!--TOC>(\d)-->/i;
+
+            let md = data[0];
             const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0];
 
             renderer.heading = (text, level) => {
@@ -178,8 +180,6 @@
               return`<h${level}>${(encodeURI(id) === id) ? '' : `<span id="${encodeURI(id)}"></span>`}
               <a id="${id}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`;
             };
-
-            let md = data[0];
 
             const imgBase = /]\(\.\.?\/resources/gmi; // todo: move ../resources to config
             md = md.replace(imgBase, '](' + window.ZeroMd.config.imgBaseNew);
