@@ -79,7 +79,7 @@
         // const absolutePath = path.startsWith('http') ? path : window.ZeroMd.config.gitlab.basePath + path;
         const id = Window.ZeroMd.config.gitlab.projectId;
         const branch = Window.ZeroMd.config.gitlab.branch;
-        const absolutePath = encodeURI(path);
+        const absolutePath = encodeURIComponent(path);
         const url = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`;
         let req = new XMLHttpRequest();
         let handler = err => {
