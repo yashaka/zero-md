@@ -3,7 +3,7 @@
 
     get version() { return 'v1.3.3'; }
     get src() { return this.getAttribute('src'); }
-    get gitlab() { return { path: this.getAttribute('path') }; }
+    get path() { return this.getAttribute('path'); }
     get manualRender() { return this.hasAttribute('manual-render'); }
     get noShadow() { return this.hasAttribute('no-shadow'); }
     get markedUrl() { return this.getAttribute('marked-url') || window.ZeroMd.config.markedUrl; }
@@ -19,6 +19,7 @@
       window.ZeroMd.markedjs = window.ZeroMd.markedjs || {};
       window.ZeroMd.markedjs.options = window.ZeroMd.markedjs.options || {};
       window.ZeroMd.config = window.ZeroMd.config || {};
+      window.ZeroMd.config.debug = window.ZeroMd.config.debug || false;
       window.ZeroMd.config.baseUrl = window.ZeroMd.config.baseUrl || '';
 
       window.ZeroMd.config.gitlab = window.ZeroMd.config.gitlab || {};
@@ -50,11 +51,18 @@
       this._fire('zero-md-ready');
     }
 
+    _debug(message) {
+      if (window.ZeroMd.config.debug) {
+        console.log(message);
+      }
+    }
+
     _fire(eventName) {
       this.dispatchEvent(new CustomEvent(eventName, {bubbles: true, composed: true}));
     }
 
     _ajaxGet(url) {
+      this._debug(`ajaxGet called with url: ${url}`);
       return new Promise((resolve, reject) => {
         if (!url) { reject(url); return; }
         const absoluteUrl = url.startsWith('http') ? url : window.ZeroMd.config.baseUrl + url;
@@ -77,10 +85,11 @@
       return new Promise((resolve, reject) => {
         if (!path) { reject(path); return; }
         // const absolutePath = path.startsWith('http') ? path : window.ZeroMd.config.gitlab.basePath + path;
-        const id = Window.ZeroMd.config.gitlab.projectId;
-        const branch = Window.ZeroMd.config.gitlab.branch;
+        const id = window.ZeroMd.config.gitlab.projectId;
+        const branch = window.ZeroMd.config.gitlab.branch;
         const absolutePath = encodeURIComponent(path);
         const url = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`;
+        this._debug(`ajaxGetFromGitlab: url: ${url}`);
         let req = new XMLHttpRequest();
         let handler = err => {
           console.warn('[zero-md] Error getting file', url);
@@ -88,7 +97,7 @@
         };
 
         req.open('GET', url, true);
-        const token = Window.ZeroMd.config.gitlab.token;
+        const token = window.ZeroMd.config.gitlab.token;
         req.setRequestHeader('PRIVATE-TOKEN', token);
         req.onload = () => {
           if (req.status >= 200 && req.status < 400) { resolve(req.responseText); }
@@ -152,15 +161,17 @@
         // Next try reading from `src` attribute
         let isReadingFromGitlabConfigured =
             window.ZeroMd.config.gitlab !== {};
+
         if (isReadingFromGitlabConfigured && this.path) {
             this._ajaxGetFromGitlab(this.path)
                 .then(data => resolve(data))
                 .catch(err => reject(err));
+        } else {
+            // Next try reading from `src` attribute
+            this._ajaxGet(this.src)
+              .then(data => resolve(data))
+              .catch(err => reject(err));
         }
-        // Next try reading from `src` attribute
-        this._ajaxGet(this.src)
-          .then(data => resolve(data))
-          .catch(err => reject(err));
       });
     }
 
