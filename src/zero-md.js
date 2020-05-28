@@ -3,7 +3,7 @@
 
     get version() { return 'v1.3.3'; }
     get src() { return this.getAttribute('src'); }
-    get path() { return this.getAttribute('path'); }
+    get path() { return this.getAttribute('path').trim(); }
     get manualRender() { return this.hasAttribute('manual-render'); }
     get noShadow() { return this.hasAttribute('no-shadow'); }
     get markedUrl() { return this.getAttribute('marked-url') || window.ZeroMd.config.markedUrl; }
