@@ -3,6 +3,7 @@
 
     get version() { return 'v1.3.3'; }
     get src() { return this.getAttribute('src'); }
+    get gitlab() { return { path: this.getAttribute('path') }; }
     get manualRender() { return this.hasAttribute('manual-render'); }
     get noShadow() { return this.hasAttribute('no-shadow'); }
     get markedUrl() { return this.getAttribute('marked-url') || window.ZeroMd.config.markedUrl; }
@@ -19,6 +20,13 @@
       window.ZeroMd.markedjs.options = window.ZeroMd.markedjs.options || {};
       window.ZeroMd.config = window.ZeroMd.config || {};
       window.ZeroMd.config.baseUrl = window.ZeroMd.config.baseUrl || '';
+
+      window.ZeroMd.config.gitlab = window.ZeroMd.config.gitlab || {};
+      window.ZeroMd.config.gitlab.token = window.ZeroMd.config.gitlab.token || null;
+      window.ZeroMd.config.gitlab.projectId = window.ZeroMd.config.gitlab.projectId || null;
+      window.ZeroMd.config.gitlab.path = window.ZeroMd.config.gitlab.path || null;
+      window.ZeroMd.config.gitlab.branch = window.ZeroMd.config.gitlab.branch || 'master';
+
       window.ZeroMd.config.anchorIdsToLowerCase = window.ZeroMd.config.anchorIdsToLowerCase === undefined ?
           true : window.ZeroMd.config.anchorIdsToLowerCase;
       window.ZeroMd.config.indentInsideTocByPixels = window.ZeroMd.config.indentInsideTocByPixels || 40;
@@ -56,6 +64,32 @@
           reject(err);
         };
         req.open('GET', absoluteUrl, true);
+        req.onload = () => {
+          if (req.status >= 200 && req.status < 400) { resolve(req.responseText); }
+          else { handler(req); }
+        };
+        req.onerror = err => handler(err);
+        req.send();
+      });
+    }
+
+    _ajaxGetFromGitlab(path) {
+      return new Promise((resolve, reject) => {
+        if (!path) { reject(path); return; }
+        // const absolutePath = path.startsWith('http') ? path : window.ZeroMd.config.gitlab.basePath + path;
+        const id = Window.ZeroMd.config.gitlab.projectId;
+        const branch = Window.ZeroMd.config.gitlab.branch;
+        const absolutePath = encodeURI(path);
+        const url = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`;
+        let req = new XMLHttpRequest();
+        let handler = err => {
+          console.warn('[zero-md] Error getting file', url);
+          reject(err);
+        };
+
+        const token = Window.ZeroMd.config.gitlab.token;
+        req.setRequestHeader('PRIVATE-TOKEN', token);
+        req.open('GET', url, true);
         req.onload = () => {
           if (req.status >= 200 && req.status < 400) { resolve(req.responseText); }
           else { handler(req); }
@@ -115,6 +149,14 @@
         // First try reading from light DOM template
         let tpl = this.querySelector('template') && this.querySelector('template').content.querySelector('xmp') || false;
         if (tpl) { resolve(tpl.textContent); return; }
+        // Next try reading from `src` attribute
+        let isReadingFromGitlabConfigured =
+            window.ZeroMd.config.gitlab !== {};
+        if (isReadingFromGitlabConfigured && this.path) {
+            this._ajaxGetFromGitlab(this.path)
+                .then(data => resolve(data))
+                .catch(err => reject(err));
+        }
         // Next try reading from `src` attribute
         this._ajaxGet(this.src)
           .then(data => resolve(data))
