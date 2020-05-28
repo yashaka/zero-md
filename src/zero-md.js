@@ -87,9 +87,9 @@
           reject(err);
         };
 
+        req.open('GET', url, true);
         const token = Window.ZeroMd.config.gitlab.token;
         req.setRequestHeader('PRIVATE-TOKEN', token);
-        req.open('GET', url, true);
         req.onload = () => {
           if (req.status >= 200 && req.status < 400) { resolve(req.responseText); }
           else { handler(req); }
