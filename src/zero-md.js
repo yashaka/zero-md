@@ -249,6 +249,9 @@
             const pythonCodeHighlightingWorkaround = /```python/gmi;
             md = md.replace(pythonCodeHighlightingWorkaround, '```');
 
+            const javaCodeHighlightingWorkaround = /```java/gmi;
+            md = md.replace(javaCodeHighlightingWorkaround, '```');
+
             // todo: fix to skip links that start with http
             const mdExtensions = /\.md\)/gmi;
             md = md.replace(mdExtensions, '-md)');
