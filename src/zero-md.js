@@ -237,13 +237,13 @@
             const imgBase = /]\(\.\.?\/resources/gmi; // todo: move ../resources to config
             md = md.replace(imgBase, '](' + window.ZeroMd.config.imgBaseNew);
 
-            const shortBreaks = /,,,,+/gmi;
+            const shortBreaks = /^,,,,+/gmi;
             md = md.replace(shortBreaks, '<br/>'.repeat(window.ZeroMd.config.shortBreaksNumber));
 
-            const longBreaks = /====+/gmi;
+            const longBreaks = /^====+/gmi;
             md = md.replace(longBreaks, '<br/>'.repeat(window.ZeroMd.config.longBreaksNumber));
 
-            const pageBreaks = /===/gmi;
+            const pageBreaks = /^===/gmi;
             md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>');
 
             const pythonCodeHighlightingWorkaround = /```python/gmi;
