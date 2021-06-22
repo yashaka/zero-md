@@ -9,7 +9,13 @@
     <link rel="canonical" href="https://zerodevx.github.io/zero-md/demo/index.html">
 
     <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js" defer></script>
-
+    <script>
+      window.ZeroMd = {
+        config: {
+          debug: true
+        }
+      };
+    </script>
     <script type="module">
       WebComponents.waitFor(() => {
         let el = document.createElement('script');

@@ -211,7 +211,7 @@
             let tocLinks = [];
 
             const tocStartLevelOption = /<!--TOC>(\d)-->/i;
-            const poetryBoldOption = /<!--(\.+)poetryBold(\.+)-->/i;
+            const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i;
 
             let md = data[0];
             const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0];

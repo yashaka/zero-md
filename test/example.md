@@ -1,5 +1,19 @@
 [TOC]
+<!--≈poetryBold≈-->
 
+# changed poetry bold
+
+```poetry
+
+    # here __underscored__ should be yet double-underscored
+    def __init__(≈self≈, value) # self should be bold here
+       ≈self≈.number = value # and here
+
+```
+
+here __underscored__ should be bold
+
+here ≈curlyEquals≈ should be curly equals (not bold)
 
 # The Ultimate Lorem Ipsum Markdown
 
