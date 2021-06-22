@@ -268,33 +268,38 @@
             // todo: change to ```poetry ... ``` style
             const poetries = /---[a-z]*\n([\s\S]*?)\n---/gmi;
             const backTickPoetries = /```poetry[a-z]*\n([\s\S]*?)\n```/gmi;
-            const processPoetry = (match, code) => {
+            const rules = [
+              [/(___)(.*?)\1/gmi,     '<em>$2</em>'], //emphasis
+
+              boldRegExpRule, //bold1
+              [/(\*\*)(.*?)\1/gmi,    '<b>$2</b>'], //bold2
+
+              // [/^(?!.*\/\*.*$).*(\*)(.*?)\1/gmi,      '<em>$2</em>'], //emphasis
+              // TODO: fix: does not work for lines: ... * ... * ... /* ... */ ...
+              // read for more info:
+              //    https://stackoverflow.com/questions/7376238/javascript-regex-look-behind-alternative
+
+              [/(____)(.*?)\1/gmi,     '<span style="text-decoration:underline">$2</span>'] //underlined
+            ];
+            const isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__';
+            const processPoetry = (rules) => (match, code) => {
               let res = code;
-              const rules = [
-                [/(___)(.*?)\1/gmi,     '<em>$2</em>'], //emphasis
-
-                boldRegExpRule, //bold1
-                [/(\*\*)(.*?)\1/gmi,    '<b>$2</b>'], //bold2
-
-                // [/^(?!.*\/\*.*$).*(\*)(.*?)\1/gmi,      '<em>$2</em>'], //emphasis
-                // TODO: fix: does not work for lines: ... * ... * ... /* ... */ ...
-                // read for more info:
-                //    https://stackoverflow.com/questions/7376238/javascript-regex-look-behind-alternative
-
-                [/(____)(.*?)\1/gmi,     '<span style="text-decoration:underline">$2</span>'] //underlined
-              ];
 
               for (const rule of rules) {
                 // console.log(rule);
                 res = res.replace(rule[0], rule[1]);
               }
 
+              if (isOriginalUnderscoredBoldDisabled) {
+                res.replace(/(__)(.*?)\1/gmi, '‡‡‡$2‡‡‡');  // to encode original __
+              }
+
               // return `<pre><code>${res}</code></pre>`;
               return `<pre>${res}</pre>`;
             };
 
-            md = md.replace(poetries, processPoetry);
-            md = md.replace(backTickPoetries, processPoetry);
+            md = md.replace(poetries, processPoetry(rules));
+            md = md.replace(backTickPoetries, processPoetry(rules));
 
             const options = {
               renderer: renderer,
@@ -302,6 +307,10 @@
             };
 
             let html = window.marked(md, Object.assign(options, window.ZeroMd.markedjs.options));
+
+            if (isOriginalUnderscoredBoldDisabled) {
+              html = html.replace(/‡‡‡/gmi, '__');
+            }
 
             const tocMarker = /\[toc\]/i;
             const toc = `<div class="toc">${tocLinks.join('')}</div>`;
